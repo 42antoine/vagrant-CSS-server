@@ -5,3 +5,5 @@
 .vagrant/machines/default/virtualbox/private_key
 .vagrant/machines/default/virtualbox/synced_folders
 .idea/
+www/*
+css*
