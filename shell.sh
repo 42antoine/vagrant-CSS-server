@@ -33,6 +33,9 @@ sudo apt-get install mysql-server -y -qq > /dev/null
 echo -e "\n--- Apache2 & PHP5 ---\n"
 sudo apt-get install apache2 php5-common libapache2-mod-php5 php5-cli php5-mysql -y -qq > /dev/null
 
+echo -e "\n--- Force dependencies ---\n"
+sudo apt-get install -f -y -qq
+
 echo -e "\n--- PHPMyAdmin ---\n"
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD"
@@ -79,7 +82,12 @@ echo "*filter
 #
 
 -A INPUT -j LOG --log-prefix \"paquet IPv4 inattendu\"
--A INPUT -j REJECT
+
+# /!\ WARNING
+# /!\ WARNING - NEVER USE THIS RULE ON PRODUCTION SERVER
+# /!\ WARNING - (Note change it with : -A INPUT -j REJECT)
+# /!\ WARNING
+-I INPUT -j ACCEPT
 
 COMMIT
 
@@ -99,8 +107,54 @@ cd /home/vagrant/www
 git clone https://github.com/aaroniker/rokket.git rokket
 mv rokket/* . && mv rokket/.* . && rmdir rokket
 
+echo "<?php phpinfo(); ?>" > /home/vagrant/www/info.php
+
+echo "{
+    \"name\": \"Rokket Panel\",
+    \"url\": \"http:\/\/\",
+    \"version\": \"0.4\",
+    \"setup\": false,
+    \"debug\": false,
+    \"cache\": false,
+    \"logs\": 1,
+    \"emailNot\": null,
+    \"email\": \"\",
+    \"ip\": \"\",
+    \"DB\": {
+        \"host\": \"\",
+        \"user\": \"root\",
+        \"password\": \"vagrant\",
+        \"database\": \"rokket\",
+        \"prefix\": \"\"
+    },
+    \"SSH\": {
+        \"ip\": \"127.0.0.1:22\",
+        \"user\": \"root\",
+        \"password\": \"vagrant\"
+    },
+    \"timezone\": \"Europe\/Berlin\",
+    \"logincookie\": 86400,
+    \"lang\": \"en_gb\",
+    \"layout\": \"default\",
+    \"user\": []
+}
+" > /home/vagrant/www/lib/config.json
+
+mysql -uroot -p$DBPASSWD -e "CREATE TABLE IF NOT EXISTS $DBNAME.addons ( id  int(11) unsigned NOT NULL, name  varchar(255) NOT NULL, active  int(1) NOT NULL, install  int(1) NOT NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;"
+mysql -uroot -p$DBPASSWD -e "CREATE TABLE IF NOT EXISTS $DBNAME.server ( id  int(11) NOT NULL, gameID  varchar(255) NOT NULL, name  varchar(255) NOT NULL, port  int(5) NOT NULL, status  varchar(255) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;"
+mysql -uroot -p$DBPASSWD -e "CREATE TABLE IF NOT EXISTS $DBNAME.user ( id  int(11) NOT NULL, firstname  varchar(255) NOT NULL, name  varchar(255) NOT NULL, username  varchar(255) NOT NULL, email  varchar(255) NOT NULL, password  varchar(255) NOT NULL, salt  varchar(255) NOT NULL, admin  int(11) NOT NULL, perms  varchar(255) NOT NULL) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;"
+mysql -uroot -p$DBPASSWD -e "ALTER TABLE $DBNAME.addons ADD PRIMARY KEY ( id );"
+mysql -uroot -p$DBPASSWD -e "ALTER TABLE $DBNAME.server ADD PRIMARY KEY ( id );"
+mysql -uroot -p$DBPASSWD -e "ALTER TABLE $DBNAME.user ADD PRIMARY KEY ( id );"
+mysql -uroot -p$DBPASSWD -e "ALTER TABLE $DBNAME.addons MODIFY  id  int(11) NOT NULL AUTO_INCREMENT;"
+mysql -uroot -p$DBPASSWD -e "ALTER TABLE $DBNAME.server MODIFY  id  int(11) NOT NULL AUTO_INCREMENT;"
+mysql -uroot -p$DBPASSWD -e "ALTER TABLE $DBNAME.user MODIFY  id  int(11) NOT NULL AUTO_INCREMENT;"
+mysql -uroot -p$DBPASSWD -e "INSERT INTO $DBNAME.user (firstname,name,username,email,password,salt,admin,perms) VALUES('cvepdb','vagrant','42_vagrant','contact@cvepdb.fr',sha2('rootvagrantroot', 256),'root',1,'');"
+
 echo -e "\n--- Install CS:S server ---\n"
-# cd /home/vagrant
-# wget https://raw.github.com/dgibbs64/linuxgameservers/master/CounterStrikeSource/cssserver
-# chmod +x cssserver
-# /home/vagrant/cssserver auto-install
+cd /home/vagrant
+wget https://raw.github.com/dgibbs64/linuxgameservers/master/CounterStrikeSource/cssserver
+sed -i 's/"0.0.0.0"/"192.168.56.102"/' /home/vagrant/cssserver
+chmod +x cssserver
+sudo chown vagrant:vagrant -R /home/vagrant/serverfiles
+/home/vagrant/cssserver auto-install
