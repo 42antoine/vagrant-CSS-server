@@ -60,7 +60,7 @@ All the action list is accessed like this (inside the vm) :
 	$> ./csgoserver
 	@seealso https://github.com/dgibbs64/linuxgsm/wiki/Usage
 	
-To connect to your game server, use 192.168.56.102:27919 as server IP.
+To connect to your game server, use 192.168.56.102:27015 as server IP.
 
 	- rcon password : rconpassword
 
