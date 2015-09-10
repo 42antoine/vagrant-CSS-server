@@ -23,7 +23,7 @@ Vagrant.configure(2) do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   config.vm.synced_folder "./www", "/home/vagrant/www"
-  config.vm.synced_folder "./css", "/home/vagrant/serverfiles/css"
+  config.vm.synced_folder "./css", "/home/vagrant/serverfiles/cstrike"
 
   # Provision script
   config.vm.provision "shell", path: "shell.sh", privileged: false
