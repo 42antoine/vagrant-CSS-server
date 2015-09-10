@@ -7,3 +7,4 @@
 .idea/
 www/*
 css*
+.vagrant/machines/default/virtualbox/creator_uid
