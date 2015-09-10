@@ -1,7 +1,7 @@
 # vagrant-CSS-server
-Vagrant deployement for CSS server
+Vagrant deployement for CSS server. Use this tool to easily start new addons development or for fun!
 
-/!\ Project in development
+###### /!\ Project for developers - never use this project to make online game server!
 
 # Install vagrant
 
@@ -15,22 +15,29 @@ Go to  https://www.virtualbox.org/wiki/Downloads and download / install vagrant 
 
 # Deploy your server CS:S
 
-clone this repository :
+Clone this repository :
 
 	$> git clone https://github.com/42antoine/vagrant-CSS-server.git
 	$> cd vagrant-CSS-server
 	$> vagrant up
+	$> vagrant ssh
 	$> ./cssserver start
 
 Stop the game server
+
 	$> ./cssserver stop
 
 Update the game server
+
 	$> ./cssserver update
+
+The "debug" mode functionality - for moders, run server instance to debug transaction
+
+	$> ./csgoserver debut
 
 ## Services
 
-	Your server is now running on.
+Your server is now running on !
 
 ### MySQL
 
@@ -39,21 +46,29 @@ Update the game server
 	
 ### Apache2, PHP
 
-	On the vagrant vm, a web server is installed. You can access it via 127.0.0.1:8089
-	The "Rokket" game server manager is installed as default website. You have to configure it to use it (Note : automated installation is in progress).
-	You can also use phpmyadmin at this address 127.0.0.1:8089/phpmyadmin
+On the vagrant vm, a web server is installed. You can access it via 127.0.0.1:8089
+The "Rokket" game server manager is installed as default website.
+You can also use phpmyadmin at this address 127.0.0.1:8089/phpmyadmin
+
+All website content is available from you computer in : vagrant-CSGO-server/www *(1)
 
 ### CS:S game server
 
-	Use the ./cssserver script to start / update / stop your server.
+Use the ./cssserver script to start / update / stop / debug your server.
+All the action list is accessed like this (inside the vm) :
+
+	$> ./csgoserver
+	@seealso https://github.com/dgibbs64/linuxgsm/wiki/Usage
 	
-	To connect to your game server, use 127.0.0.1:27919 as server IP.
+To connect to your game server, use 192.168.56.102:27919 as server IP.
 
 	- rcon password : rconpassword
-	
+
+All csgo server content is available from you computer in : vagrant-CSGO-server/csgo *(1)
+
 ## VM file sharing
 	
-	On project root directory, you can see "www" and "csgo" directories. These folders are shared from VM, use it to share game server configuration or website with the VM.
+*(1) : On project root directory, you can see "www" and "css" directories. These folders are shared from VM, use it to share game server configuration or website with the VM.
 
 ## See also
 
