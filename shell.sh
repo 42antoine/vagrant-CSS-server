@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# DEBUG - Travis-ci
+TRAVIS=$1
+
+if [[ -z "${TRAVIS}" ]]; then
+  mkdir ~/www
+  mkdir -p ~/serverfiles/cstrike
+fi
+
 # Variables
 DBHOST=localhost
 DBNAME=rokket
