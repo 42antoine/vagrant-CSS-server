@@ -3,6 +3,8 @@ Vagrant deployement for CSS server. Use this tool to easily start new addons dev
 
 ###### /!\ Project for developers - never use this project to make online game server!
 
+master [![Build Status](https://travis-ci.org/42antoine/vagrant-CSS-server.svg?branch=master)](https://travis-ci.org/42antoine/vagrant-CSS-server) | dev [![Build Status](https://travis-ci.org/42antoine/vagrant-CSS-server.svg?branch=dev)](https://travis-ci.org/42antoine/vagrant-CSS-server)
+
 # Install vagrant
 
 Go to https://www.vagrantup.com/downloads.html and download / install vagrant for your system.
