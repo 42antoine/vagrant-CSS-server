@@ -1,15 +1,9 @@
 #!/bin/bash
 
+
 # DEBUG - Travis-ci
 TRAVIS=$1
 
-if [[ -z "${TRAVIS}" ]]; then
-
-  export DEBIAN_FRONTEND=noninteractive
-
-  mkdir ~/www
-  mkdir -p ~/serverfiles/cstrike
-fi
 
 # Variables
 DBHOST=localhost
@@ -17,32 +11,53 @@ DBNAME=rokket
 DBUSER=root
 DBPASSWD=vagrant
 
-echo -e "\n--- Processing server installation ---\n"
 
-echo -e "\n--- Linux update ---\n"
-sudo apt-get update -y -q
-sudo apt-get upgrade -y -q
+if [[ -z "${TRAVIS}" ]]; then
+
+  echo -e "\n--- Processing server installation ---\n"
+
+  APTGET="sudo apt-get -y -q=9"
+
+  echo -e "\n--- Linux update ---\n"
+
+else
+
+  echo -e "\n--- Processing travis installation ---\n"
+
+  export DEBIAN_FRONTEND=noninteractive
+
+  mkdir ~/www
+  mkdir -p ~/serverfiles/cstrike
+
+  APTGET="sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confnew\""
+
+  echo -e "\n--- Travis linux update ---\n"
+
+fi
+
+eval $APTGET update
+eval $APTGET upgrade
 
 echo -e "\n--- libc6-i386 & lib32gcc1 - i386 packages ---\n"
 sudo dpkg --add-architecture i386
-sudo apt-get update -y -q
-sudo apt-get install libc6-i386 lib32gcc1 -y -q
+eval $APTGET update
+eval $APTGET install libc6-i386 lib32gcc1
 
 echo -e "\n--- ia32-libs - i386 packages ---\n"
 sudo dpkg --add-architecture i386
-sudo apt-get update -y -q
-sudo aptitude install ia32-libs -y -q=9
+eval $APTGET update
+sudo aptitude -y -q install ia32-libs
 
 echo -e "\n--- Binaries (gdb, tmux, git ...) ---\n"
-sudo apt-get install gdb tmux git -y -q
+eval $APTGET install gdb tmux git
 
 echo -e "\n--- MySQL ---\n"
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD"
-sudo apt-get install mysql-server -y -q
+eval $APTGET install mysql-server
 
 echo -e "\n--- Apache2 & PHP5 ---\n"
-sudo apt-get install apache2-mpm-prefork apache2 php5-common libapache2-mod-php5 php5-cli php5-mysql -y -q
+eval $APTGET install apache2-mpm-prefork apache2 php5-common libapache2-mod-php5 php5-cli php5-mysql
 
 echo -e "\n--- Setting up our MySQL user and db ---\n"
 mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME"
@@ -60,7 +75,7 @@ sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm pass
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD"
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD"
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
-sudo apt-get install phpmyadmin -y -q
+eval $APTGET install phpmyadmin
 
 echo -e "\n--- IP Tables ---\n"
 echo "*filter
