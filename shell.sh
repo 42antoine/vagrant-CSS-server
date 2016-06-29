@@ -7,7 +7,7 @@ TRAVIS=$1
 
 # Variables
 DBHOST=localhost
-DBNAME=rokket
+DBNAME=vagrant
 DBUSER=root
 DBPASSWD=vagrant
 
