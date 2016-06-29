@@ -35,10 +35,6 @@ The "debug" mode functionality - for moders, run server instance to debug transa
 
 	$> ./csgoserver debug
 
-## Services
-
-Your server is now running on !
-
 ### MySQL
 
 	- username : root
@@ -46,8 +42,7 @@ Your server is now running on !
 	
 ### Apache2, PHP
 
-On the vagrant vm, a web server is installed. You can access it via 127.0.0.1:8089
-The "Rokket" game server manager is installed as default website (https://github.com/aaroniker/rokket).
+On the vagrant vm, a web server is installed. You can access it via 127.0.0.1:8089.
 You can also use phpmyadmin at this address 127.0.0.1:8089/phpmyadmin
 
 All website content is available from you computer in : vagrant-CSGO-server/www *(1)
@@ -73,5 +68,3 @@ All csgo server content is available from you computer in : vagrant-CSGO-server/
 ## See also
 
 https://github.com/dgibbs64/linuxgsm/wiki/Usage
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/42antoine/vagrant-css-server/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
